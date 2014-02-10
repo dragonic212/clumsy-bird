@@ -1,0 +1,158 @@
+ {name: "start", type:"image", src: "data/img/start1.png"},
+8	8	
+ 	 {name: "start_hover", type:"image", src: "data/img/start2.png"},
+9	9	
+ 	 {name: "ground", type:"image", src: "data/img/ground.png"},
+ 	10	
++	 {name: "gameover", type:"image", src: "data/img/gameover.png"},
+ 	11	
++	 {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
+10	12	
+ 
+11	13	
+ 	
+12	14	
+ 	/* Background music. 
+31  js/screens/gameover.js View
+ @@ -2,19 +2,34 @@ game.GameOverScreen = me.ScreenObject.extend({
+2	2	
+   init : function() {
+3	3	
+ 		this.parent(true);
+4	4	
+ 		this.font = null;
+5	 	
+-    this.title = 'Game Over';
+6	5	
+     this.score = null;
+7	6	
+     this.timer = null;
+8	7	
+ 	},
+9	 	
+-	
+10	 	
+-  onResetEvent: function() {	
+ 	8	
++
+ 	9	
++  onResetEvent: function() {
+11	10	
+ 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
+12	11	
+ 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
+13	 	
+-    
+14	 	
+-    this.font = new me.Font('Verdana', 40, 'red', 'center');
+15	 	
+-    me.game.add(new BackgroundLayer('bg', 1));
+ 	12	
++
+ 	13	
++    this.font = new me.Font('Arial Black', 50, 'black', 'center');
+16	14	
+     this.score = 'Final Score: ' + game.data.score;
+17	15	
+     this.timer = 'Steps: ' + Math.round(game.data.timer);
+ 	16	
++
+ 	17	
++    me.game.add(new BackgroundLayer('bg', 1));
+ 	18	
++
+ 	19	
++    var gImage =  me.loader.getImage('gameover');
+ 	20	
++    me.game.add(new me.SpriteObject(
+ 	21	
++      me.video.getWidth()/2 - gImage.width/2,
+ 	22	
++      me.video.getHeight()/2 - gImage.height/2 - 100,
+ 	23	
++      gImage
+ 	24	
++    ), 10);
+ 	25	
++
+ 	26	
++    var gImageBoard = me.loader.getImage('gameoverbg');
+ 	27	
++    me.game.add(new me.SpriteObject(
+ 	28	
++      me.video.getWidth()/2 - gImageBoard.width/2,
+ 	29	
++      me.video.getHeight()/2 - gImageBoard.height/2,
+ 	30	
++      gImageBoard
+ 	31	
++    ), 10);
+ 	32	
++
+18	33	
+ 	},
+19	34	
+ 
+20	35	
+ 	update : function() {
+ @@ -25,12 +40,10 @@ game.GameOverScreen = me.ScreenObject.extend({
+25	40	
+ 	},
+26	41	
+ 
+27	42	
+   draw: function(context) {
+28	 	
+-		this.font.draw(context, this.title,  me.game.viewport.width/2,
+29	 	
+-        me.game.viewport.height/2 - 100);
+30	43	
+ 		this.font.draw(context, this.score,  me.game.viewport.width/2,
+31	44	
+         me.game.viewport.height/2);
+32	45	
+ 		this.font.draw(context, this.timer,  me.game.viewport.width/2,
+33	 	
+-        me.game.viewport.height/2 + 40);
+ 	46	
++        me.game.viewport.height/2 + 60);
+34	47	
+   },
+35	48	
+ 
+36	49	
+ 	onDestroyEvent : function() {
+1  js/screens/play.js View
+ @@ -13,6 +13,7 @@ game.PlayScreen = me.ScreenObject.extend({
+13	13	
+ 	onResetEvent: function() {
+14	14	
+ 		game.data.score = 0;
+15	15	
+     game.data.timer = 0;
+ 	16	
++
+16	17	
+     me.game.add(new BackgroundLayer('bg', 1));        
+17	18	
+ 
+18	19	
+     var groundImage = me.loader.getImage('ground');
+9  js/screens/title.js View
+ @@ -20,15 +20,8 @@ game.TitleScreen = me.ScreenObject.extend({
+      //start button
+      this.button = new Start('start', me.state.PLAY, me.video.getHeight()/2);
+      me.game.add(this.button, 10);
+ -
+      me.game.add(this.logo, 10);
+ -    /*
+ -     * DONT KNOW WHY THIS IS NOT WORKING!!
+ -    var logoTween = new me.Tween(this.logo).to(
+ -        {y: me.game.viewport.height/2},
+ -        1000
+ -    ).easing(me.Tween.Easing.Bounce.InOut).start();
+ -    */
+ +   
+  	},
+  	
+  	update : function() {
